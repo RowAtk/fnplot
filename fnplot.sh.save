@@ -1,0 +1,17 @@
+@echo off
+
+set BASE=C:\Users\Zidane\Desktop\UWI\COMP3652
+set CUP_VERSION=11b
+set CUP_ALIAS=jcup
+set CUP_HOME=%BASE%\java-cup
+
+set PROJECT_HOME=%BASE%\assignments\#1\fnplot
+
+call jflex syntax/FnPlotLexer.flex
+call %CUP_ALIAS% -parser FnPlotParser -destdir syntax syntax\FnPlotParser.cup
+
+REM compile the code
+javac -classpath %CUP_HOME%\lib\java-cup-%CUP_VERSION%-runtime.jar;%PROJECT_HOME%\src\fnplot\cs34q.gfx.jar;%PROJECT_HOME%\src; gui/*.java syntax/*.java semantics/*.java sys/*.java values/*.java
+
+REM run the repl
+java -classpath %CUP_HOME%\lib\java-cup-%CUP_VERSION%-runtime.jar;%PROJECT_HOME%\src\fnplot\cs34q.gfx.jar;%PROJECT_HOME%\src; fnplot.gui.FnPlotFrame
