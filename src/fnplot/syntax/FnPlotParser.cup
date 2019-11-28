@@ -50,7 +50,7 @@ scan with {:
 terminal LPAREN, RPAREN;
 
 // arithmetic operators
-terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN;
+terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN, POW;
 terminal LET, IN, LBRACE, RBRACE, COMMA;
 terminal SEMI;
 
@@ -73,6 +73,7 @@ non terminal Exp expression;
 non terminal Exp arithExp;
 non terminal Exp term;
 non terminal Exp factor;
+non terminal Exp power;
 non terminal FnPlotValue<?> number;
 non terminal empty;
 
@@ -135,7 +136,10 @@ term ::= term:t MUL factor:f {:
 
 number ::= INTEGER:ilit {: RESULT = FnPlotValue.make(ilit); :};
 
-factor ::= number:n {: RESULT = new ExpLit(n); :} |
+factor ::= factor:f POW power:p {:RESULT = new ExpPow(f, p); :} |
+						power: p {:RESULT = p; :};
+
+power ::= number:n {: RESULT = new ExpLit(n); :} |
 	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
 	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
 

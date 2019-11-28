@@ -11,6 +11,7 @@ import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ExpVar;
 import fnplot.syntax.ExpMod;
 import fnplot.syntax.ExpSub;
+import fnplot.syntax.ExpPow;
 import fnplot.syntax.Binding;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
@@ -176,6 +177,14 @@ public class Evaluator
 	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
 	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
 	return val1.mod(val2);
+    }
+
+    @Override
+    public FnPlotValue<?> visitExpPow(ExpPow exp, Environment<FnPlotValue<?>> arg) throws FnPlotException {
+        FnPlotValue<?> val1, val2;
+        val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+        val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+        return val1.pow(val2);
     }
 
     @Override

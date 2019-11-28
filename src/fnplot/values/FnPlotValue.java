@@ -106,6 +106,16 @@ public abstract class FnPlotValue<T extends FnPlotValue<T>> {
     }
 
     /**
+     * 
+     * @param arg
+     * @return
+     * @throws FnPlotException
+     */
+    public FnPlotValue<?> pow(FnPlotValue<?> arg) throws FnPlotException {
+        throw new TypeFnPlotException("Operation pow called with non-numeric type");
+    }
+
+    /**
      *
      * @return The integer value wrapped in this FnPlot value
      * @throws TypeFnPlotException If there is no such integer

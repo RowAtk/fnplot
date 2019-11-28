@@ -81,6 +81,15 @@ public class FnPlotReal extends FnPlotValue<FnPlotReal> {
             return make(value % arg.doubleValue());
         }
     }
+
+    @Override
+    public FnPlotReal pow(FnPlotValue<?> arg) throws FnPlotException {
+        if (arg.isInteger()) {
+            return make(Math.pow(value,  arg.intValue()));
+        } else {
+            return make(Math.pow(value, arg.doubleValue()));
+        }
+    }
     
     @Override
     public int intValue() {

@@ -52,7 +52,9 @@ alpha = [a-zA-Z_]
 
 num = [0-9]
 
-real = [0-9]+\.[0-9]+
+float = [0-9]+\.[0-9]+
+
+neg = -(float|num)
 
 alphanum = {alpha}|{num}
 
@@ -84,12 +86,18 @@ alphanum = {alpha}|{num}
 <YYINITIAL>	"in"	{return new Symbol(sym.IN);}
 
 <YYINITIAL>	";" 	{return new Symbol(sym.SEMI);}
+<YYINITIAL> "^"	{return new Symbol(sym.POW);}
 
-<YYINITIAL>    {num}+ {
+<YYINITIAL>    -{num}+|{num}+ {
 	       // INTEGER
 	       return new Symbol(sym.INTEGER, 
 				 new Integer(yytext()));
 	       }
+<YYINITIAL> -{float}|{float} {
+			// FLOAT
+			return new Symbol(sym.FLOAT,
+				new Double(yytext()));
+}
 
 <YYINITIAL>    {alpha}{alphanum}* {
 	       // VARIABLE
