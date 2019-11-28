@@ -50,6 +50,10 @@ public abstract class FnPlotValue<T extends FnPlotValue<T>> {
         return getType() == FnPlotType.INTEGER;
     }
 
+    public boolean isReal() {
+        return getType() == FnPlotType.REAL;
+    }
+
     /**
      * Add the given value to this value
      * @param arg The value to be added.

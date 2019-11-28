@@ -57,6 +57,7 @@ terminal SEMI;
 // terminals with values
 terminal Integer INTEGER;
 terminal String VARIABLE;
+terminal DOUBLE FLOAT;
 
 /* Non terminals */
 non terminal ArithProgram program;

@@ -23,7 +23,7 @@ public class ExpPow extends Exp {
 
     @Override
     public <S, T> T visit(Visitor<S, T> v, S arg) throws FnPlotException {
-        return v.visitExpSub(this, arg);
+        return v.visitExpPow(this, arg);
     }
 
     @Override
