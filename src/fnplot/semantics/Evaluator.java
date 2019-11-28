@@ -11,6 +11,7 @@ import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ExpVar;
 import fnplot.syntax.ExpMod;
 import fnplot.syntax.ExpSub;
+import fnplot.syntax.ExpPow;
 import fnplot.syntax.Binding;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
@@ -18,6 +19,8 @@ import fnplot.syntax.ExpFunction;
 import fnplot.sys.FnPlotException;
 import fnplot.values.FnPlotReal;
 import fnplot.values.FnPlotValue;
+import sun.tools.java.Environment;
+
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -179,6 +182,15 @@ public class Evaluator
     }
 
     @Override
+    public FnPlotValue<?> visitExpPow(ExpPow exp, Environment<FnPlotValue<?>> arg)
+	throws FnPlotException {
+	FnPlotValue<?> val1, val2;
+	val1 = (FnPlotValue) exp.getExpL().visit(this, arg);
+	val2 = (FnPlotValue) exp.getExpR().visit(this, arg);
+	return val1.pow(val2);
+    }
+
+    @Override
     public FnPlotValue<?> visitExpLit(ExpLit exp, Environment<FnPlotValue<?>> arg)
 	throws FnPlotException {
 	return exp.getVal();
@@ -188,5 +200,9 @@ public class Evaluator
     public FnPlotValue<?> visitExpVar(ExpVar exp, Environment<FnPlotValue<?>> env)
 	throws FnPlotException {
 	return env.get(exp.getVar());
+    }
+
+    public FnPlotValue<?> visitFnDefn(ExpFunction exp, Environment<FnPlotValue<?>> env) throws FnPlotException {
+        return exp.getBody();
     }
 }

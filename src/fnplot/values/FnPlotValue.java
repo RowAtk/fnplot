@@ -51,6 +51,15 @@ public abstract class FnPlotValue<T extends FnPlotValue<T>> {
     }
 
     /**
+     *
+     * @return <code>true</code> if and only if this value is numerically
+     * equivalent to a double/float
+     */
+    public boolean isDouble() {
+        return getType() == FnPlotType.REAL;
+    }
+
+    /**
      * Add the given value to this value
      * @param arg The value to be added.
      * @return The sum of the two values as a new instance of FnPlotValue.
@@ -104,6 +113,16 @@ public abstract class FnPlotValue<T extends FnPlotValue<T>> {
     public FnPlotValue<?> mod(FnPlotValue<?> arg) throws FnPlotException {
             throw new TypeFnPlotException("Operation mod called with non-numeric type");
     }
+
+    /**
+     * 
+     * @param arg
+     * @return
+     * @throws FnPlotException
+     */
+    public FnPlotValue<?> pow(FnPlotValue<?> arg) throws FnPlotException {
+        throw new TypeFnPlotException("Operation mod called with non-numeric type");
+}
 
     /**
      *

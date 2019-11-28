@@ -50,13 +50,14 @@ scan with {:
 terminal LPAREN, RPAREN;
 
 // arithmetic operators
-terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN;
+terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN, POW;
 terminal LET, IN, LBRACE, RBRACE, COMMA;
 terminal SEMI;
 
 // terminals with values
 terminal Integer INTEGER;
 terminal String VARIABLE;
+terminal Double FLOAT;
 
 /* Non terminals */
 non terminal ArithProgram program;
@@ -73,6 +74,7 @@ non terminal Exp expression;
 non terminal Exp arithExp;
 non terminal Exp term;
 non terminal Exp factor;
+non terminal Exp power;
 non terminal FnPlotValue<?> number;
 non terminal empty;
 
@@ -125,15 +127,20 @@ arithExp ::= 	arithExp:e PLUS term:t {:
 			RESULT = new ExpSub(e, t); :} |
 		term:t {: RESULT = t; :};
 
-term ::= term:t MUL factor:f {:
-		RESULT = new ExpMul(t, f); :} |
-	 term:t DIV factor:f {:
-		RESULT = new ExpDiv(t, f); :} |
-	 term:t MOD factor:f {:
-		RESULT = new ExpMod(t, f); :} |
-	 factor:f {: RESULT = f; :};
+term ::= term:t MUL power:p {:
+		RESULT = new ExpMul(t, p); :} |
+	 term:t DIV power:p {:
+		RESULT = new ExpDiv(t, p); :} |
+	 term:t MOD power:p {:
+		RESULT = new ExpMod(t, p); :} |
+	 power:p {: RESULT = p; :};
 
 number ::= INTEGER:ilit {: RESULT = FnPlotValue.make(ilit); :};
+
+power ::= power: p POW factor: f {:
+		RESULT = new ExpPow(p, f); :} |
+		factor: f {: RESULT = f; :};
+}
 
 factor ::= number:n {: RESULT = new ExpLit(n); :} |
 	   VARIABLE:var {: RESULT = new ExpVar(var); :} |

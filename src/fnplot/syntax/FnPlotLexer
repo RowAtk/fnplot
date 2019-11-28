@@ -65,31 +65,44 @@ alphanum = {alpha}|{num}
 <YYINITIAL>	{ws}	{
                         //skip whitespace
 			}
-<YYINITIAL>	"+"	{return new Symbol(sym.PLUS);}
-<YYINITIAL>	"-"	{return new Symbol(sym.MINUS);}
-<YYINITIAL>	"*"	{return new Symbol(sym.MUL);}
-<YYINITIAL>	"/"	{return new Symbol(sym.DIV);}
-<YYINITIAL>	"%"	{return new Symbol(sym.MOD);}
-<YYINITIAL>	"="	{return new Symbol(sym.ASSIGN);}
+<YYINITIAL>	"+"		{return new Symbol(sym.PLUS);}
+<YYINITIAL>	"-"		{return new Symbol(sym.MINUS);}
+<YYINITIAL>	"*"		{return new Symbol(sym.MUL);}
+<YYINITIAL>	"/"		{return new Symbol(sym.DIV);}
+<YYINITIAL>	"%"		{return new Symbol(sym.MOD);}
+<YYINITIAL> "^" 	{return new Symbol(sym.POW);}
+<YYINITIAL>	"="		{return new Symbol(sym.ASSIGN);}
 
-<YYINITIAL>	"("	{return new Symbol(sym.LPAREN);}
-<YYINITIAL>	")"	{return new Symbol(sym.RPAREN);}
+<YYINITIAL>	"("		{return new Symbol(sym.LPAREN);}
+<YYINITIAL>	")"		{return new Symbol(sym.RPAREN);}
 
-<YYINITIAL>	"{"	{return new Symbol(sym.LBRACE);}
-<YYINITIAL>	"}"	{return new Symbol(sym.RBRACE);}
+<YYINITIAL>	"{"		{return new Symbol(sym.LBRACE);}
+<YYINITIAL>	"}"		{return new Symbol(sym.RBRACE);}
 
-<YYINITIAL>	","	{return new Symbol(sym.COMMA);}
+<YYINITIAL>	","		{return new Symbol(sym.COMMA);}
 
 <YYINITIAL>	"let"	{return new Symbol(sym.LET);}
 <YYINITIAL>	"in"	{return new Symbol(sym.IN);}
+<YYINITIAL> "fun" 	{return new Symbol(sym.FUN);}
+<YYINITIAL> "mapsto"{return new Symbol(sym.MAPTO);}
+<YYINITIAL> "plot"	{return new Symbol(sym.PLOT);}
+<YYINITIAL> "for"	{return new Symbol(sym.FOR);}
+<YYINITIAL> "clear" {return new Symbol(sym.CLEAR);}
 
 <YYINITIAL>	";" 	{return new Symbol(sym.SEMI);}
 
-<YYINITIAL>    {num}+ {
+
+<YYINITIAL>    -{num}+|{num}+ {
 	       // INTEGER
 	       return new Symbol(sym.INTEGER, 
-				 new Integer(yytext()));
+				new Integer(yytext()));
 	       }
+
+<YYINITIAL>	-{real}|{real} {
+			// FLOAT
+			return new Symbol(sym.FLOAT,
+				new Double(yytext()));
+			}
 
 <YYINITIAL>    {alpha}{alphanum}* {
 	       // VARIABLE
