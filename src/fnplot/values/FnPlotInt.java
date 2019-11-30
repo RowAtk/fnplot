@@ -95,7 +95,7 @@ public class FnPlotInt extends FnPlotValue<FnPlotInt> {
         if (arg.isInteger()) {
             return make((int) Math.pow(value, arg.intValue()));
         } else {
-            return make((int) Math.pow(value, arg.intValue()));
+            return make((int) Math.pow(value, arg.doubleValue()));
         }
     }
     

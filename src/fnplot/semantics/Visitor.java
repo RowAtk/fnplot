@@ -10,9 +10,12 @@ import fnplot.syntax.ExpMul;
 import fnplot.syntax.ExpSub;
 import fnplot.syntax.ExpMod;
 import fnplot.syntax.ExpVar;
+import fnplot.syntax.PlotCls;
 import fnplot.syntax.ExpAdd;
 import fnplot.syntax.ExpPow;
 import fnplot.syntax.ExpFunction;
+import fnplot.syntax.ExpFunctionCall;
+import fnplot.syntax.ExpPlot;
 import fnplot.syntax.ArithProgram;
 import fnplot.sys.FnPlotException;
 
@@ -147,4 +150,21 @@ public interface Visitor<S, T> {
      * @throws FnPlotException
      */
     public T visitFnDefn(ExpFunction exp, S arg) throws FnPlotException;
+
+    /**
+     * 
+     * @param exp
+     * @param arg
+     * @return
+     * @throws FnPlotException
+     */
+    public T visitFnCall(ExpFunctionCall exp, S arg) throws FnPlotException;
+
+    /**
+     * 
+     */
+    public T visitFnPlot(ExpPlot map, S arg) throws FnPlotException;
+
+
+    public T visitClear(PlotCls cls, S arg) throws FnPlotException;
 }

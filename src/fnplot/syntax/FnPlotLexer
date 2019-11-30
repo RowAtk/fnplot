@@ -24,6 +24,8 @@ import java_cup.runtime.*;
 %char
 %line
 
+%debug
+
 %{
     public int getChar() {
 	return yychar + 1;
@@ -50,7 +52,7 @@ ws = {cc}|[\t ]
 
 alpha = [a-zA-Z_]
 
-num = [0-9]
+num = [0-9]+
 
 real = [0-9]+\.[0-9]+
 
@@ -79,30 +81,34 @@ alphanum = {alpha}|{num}
 <YYINITIAL>	"{"		{return new Symbol(sym.LBRACE);}
 <YYINITIAL>	"}"		{return new Symbol(sym.RBRACE);}
 
+<YYINITIAL>	":"		{return new Symbol(sym.COLON);}
+<YYINITIAL>	"[" 	{return new Symbol(sym.LSQUARE);}
+<YYINITIAL>	"]"		{return new Symbol(sym.RSQUARE);}
+
 <YYINITIAL>	","		{return new Symbol(sym.COMMA);}
 
 <YYINITIAL>	"let"	{return new Symbol(sym.LET);}
 <YYINITIAL>	"in"	{return new Symbol(sym.IN);}
 <YYINITIAL> "fun" 	{return new Symbol(sym.FUN);}
-<YYINITIAL> "mapsto"{return new Symbol(sym.MAPTO);}
+<YYINITIAL> "mapsto"	{return new Symbol(sym.MAPSTO);}
+<YYINITIAL> "->"	{return new Symbol(sym.MAPSTO);}
 <YYINITIAL> "plot"	{return new Symbol(sym.PLOT);}
 <YYINITIAL> "for"	{return new Symbol(sym.FOR);}
 <YYINITIAL> "clear" {return new Symbol(sym.CLEAR);}
 
 <YYINITIAL>	";" 	{return new Symbol(sym.SEMI);}
 
-
-<YYINITIAL>    -{num}+|{num}+ {
-	       // INTEGER
-	       return new Symbol(sym.INTEGER, 
-				new Integer(yytext()));
-	       }
-
-<YYINITIAL>	-{real}|{real} {
+<YYINITIAL>	{real} {
 			// FLOAT
 			return new Symbol(sym.FLOAT,
 				new Double(yytext()));
 			}
+
+<YYINITIAL>    {num} {
+	       // INTEGER
+	       return new Symbol(sym.INTEGER, 
+				new Integer(yytext()));
+	       }
 
 <YYINITIAL>    {alpha}{alphanum}* {
 	       // VARIABLE

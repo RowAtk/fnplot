@@ -16,10 +16,14 @@ import fnplot.syntax.Binding;
 import fnplot.syntax.ArithProgram;
 import fnplot.syntax.Exp;
 import fnplot.syntax.ExpFunction;
+import fnplot.syntax.ExpFunctionCall;
+import fnplot.syntax.ExpPlot;
+import fnplot.syntax.PlotCls;
 import fnplot.sys.FnPlotException;
 import fnplot.values.FnPlotReal;
 import fnplot.values.FnPlotValue;
-import sun.tools.java.Environment;
+import fnplot.values.FnPlotFunction;
+// import sun.tools.java.Environment;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -202,7 +206,51 @@ public class Evaluator
 	return env.get(exp.getVar());
     }
 
-    public FnPlotValue<?> visitFnDefn(ExpFunction exp, Environment<FnPlotValue<?>> env) throws FnPlotException {
-        return exp.getBody();
+    public FnPlotValue<?> visitFnDefn(ExpFunction fnexp, Environment<FnPlotValue<?>> env) throws FnPlotException {
+        FnPlotFunction cl = new FnPlotFunction(fnexp, env);
+        // env.put(fnexp, cl);
+        return cl;
+
     }
+
+    public FnPlotValue<?> visitFnCall(ExpFunctionCall fnCallExp, Environment<FnPlotValue<?>> env) throws FnPlotException {
+        String name = fnCallExp.getName();
+        ArrayList<Exp> args = fnCallExp.getArguments();
+        FnPlotFunction fun = (FnPlotFunction) env.get(name);
+        ArrayList<FnPlotValue> values = new ArrayList<>();
+        for (Exp funarg : args) {
+            values.add(funarg.visit(this, env));
+        }
+        ArrayList<String> params = fun.getFunExp().getParameters();
+        Environment<FnPlotValue<?>> newEnv = new Environment(params, values, fun.getClosingEnv());
+        return fun.getFunExp().getBody().visit(this, newEnv);
+    }
+
+    public FnPlotValue<?> visitFnPlot(ExpPlot exp, Environment<FnPlotValue<?>> env) throws FnPlotException {
+        String id = exp.getItem();
+        Double start = exp.getStart();
+        Double end = exp.getEnd();
+        Exp fun = exp.getMap();
+        double[] xpoints = plotter.sample(start, end);
+        Point2D[] ypoints = new Point2D[xpoints.length];
+
+        Environment<FnPlotValue<?>> newEnv = new Environment(new ArrayList<>(), new ArrayList<>(), env); 
+        FnPlotValue y;
+        for (int x = 0; x < xpoints.length; x++) {
+            newEnv.put(id, FnPlotValue.make(xpoints[x]));
+            y = fun.visit(this, newEnv);
+            ypoints[x] = new Point2D.Double(xpoints[x], y.doubleValue());
+        }
+
+        this.plotter.plot(ypoints);
+        return null;
+    }
+
+    public FnPlotValue<?> visitClear(PlotCls cls, Environment<FnPlotValue<?>> env) throws FnPlotException{
+        this.plotter.clear();
+        return cls.visit(this, env);
+    }
+
+
+
 }

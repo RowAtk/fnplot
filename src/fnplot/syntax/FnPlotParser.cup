@@ -47,7 +47,8 @@ scan with {:
 /* Terminals (tokens returned by the scanner). */
 
 // special symbols
-terminal LPAREN, RPAREN;
+terminal LPAREN, RPAREN, LSQUARE, RSQUARE, COLON;
+terminal FUN, MAPSTO, PLOT, FOR, CLEAR;
 
 // arithmetic operators
 terminal PLUS, MINUS, MUL, DIV, MOD, ASSIGN, POW;
@@ -75,6 +76,14 @@ non terminal Exp arithExp;
 non terminal Exp term;
 non terminal Exp factor;
 non terminal Exp power;
+non terminal Exp funDefn;
+non terminal Exp funCall;
+non terminal Exp plotStmt;
+non terminal Exp clearStmt;
+non terminal ArrayList<String> paramListE;
+non terminal ArrayList<String> paramList;
+non terminal ArrayList<Exp> expListE; 
+non terminal ArrayList<Exp> expList;
 non terminal FnPlotValue<?> number;
 non terminal empty;
 
@@ -91,11 +100,13 @@ stmtList ::= stmtList:lst stmt:s {:
 		:};
 
 stmt ::= definition:d {: RESULT = d; :} |
-	 expression:e SEMI {: RESULT = e; :};
+	 expression:e SEMI {: RESULT = e; :} |
+	 plotStmt: ps SEMI {: RESULT = ps; :} |
+	 clearStmt: cls SEMI {: RESULT = cls; :};
 
 expression ::=  letExp:l {: RESULT = l; :} |
 		LBRACE stmtList:body RBRACE {: RESULT = body; :} |
-		arithExp:a {: RESULT = a; :} ;
+		arithExp:a {: RESULT = a; :};
 
 letExp ::= LET bindings:bs IN expression:body {:
 			RESULT = new StmtLet(bs, body);
@@ -117,9 +128,26 @@ bindingsAux ::= COMMA binding:b bindingsAux:bl {:
 		:} |
 		empty {: RESULT = new ArrayList(); :};
 
-definition ::= VARIABLE:v ASSIGN expression:e SEMI {:
-		   RESULT = new StmtDefinition(v, e);
-		:};
+definition ::= VARIABLE:v ASSIGN expression:e SEMI {:RESULT = new StmtDefinition(v, e);:} |
+				VARIABLE: v ASSIGN funDefn: fun SEMI {: RESULT = new StmtDefinition(v, fun); :};
+
+
+funDefn ::= FUN LPAREN paramListE: pl RPAREN MAPSTO expression: body {: RESULT = new ExpFunction(pl, body); :};
+
+paramListE ::= paramList: pl {: RESULT = pl; :} | empty {: RESULT = new ArrayList(); :};
+
+paramList ::= paramList: pl COMMA VARIABLE: v {: pl.add(v); RESULT = pl; :} |
+				VARIABLE: v {: ArrayList<String> lst = new ArrayList<>(); lst.add(v); RESULT = lst; :};
+
+funCall ::= VARIABLE:v LPAREN expListE: el RPAREN {: RESULT = new ExpFunctionCall(v, el); :};
+
+expListE ::= expList: el {: RESULT = el; :} | empty {: RESULT = new ArrayList(); :};
+
+expList ::= expList: el COMMA expression: e {: el.add(e); RESULT = el; :} |
+			expression: e {: ArrayList<Exp> lst = new ArrayList<>(); lst.add(e); RESULT = lst; :};
+
+plotStmt ::= PLOT expression: ex FOR VARIABLE: v IN LSQUARE number: start COLON number: end RSQUARE {:
+				RESULT = new ExpPlot(ex, v, start, end); :};
 
 arithExp ::= 	arithExp:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |
@@ -135,15 +163,20 @@ term ::= term:t MUL power:p {:
 		RESULT = new ExpMod(t, p); :} |
 	 power:p {: RESULT = p; :};
 
-number ::= INTEGER:ilit {: RESULT = FnPlotValue.make(ilit); :};
+number ::= INTEGER:ilit {: RESULT = FnPlotValue.make(ilit); :} |
+			MINUS INTEGER: ilit {: RESULT = FnPlotValue.make(ilit * -1); :} |
+			FLOAT:ilit {: RESULT = FnPlotValue.make(ilit); :} |
+			MINUS FLOAT: ilit {: RESULT = FnPlotValue.make(ilit * -1); :};
 
-power ::= power: p POW factor: f {:
-		RESULT = new ExpPow(p, f); :} |
-		factor: f {: RESULT = f; :};
-}
+
+power ::= power: p POW factor: f {: RESULT = new ExpPow(p, f); :} |
+			factor: f {: RESULT = f; :};
 
 factor ::= number:n {: RESULT = new ExpLit(n); :} |
 	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
+	   funCall: call {: RESULT = call; :} |
 	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
+
+clearStmt ::= CLEAR LPAREN RPAREN {: RESULT = new PlotCls(); :};
 
 empty ::= ;

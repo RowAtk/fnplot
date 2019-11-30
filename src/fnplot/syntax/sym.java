@@ -8,31 +8,47 @@ package fnplot.syntax;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MOD = 8;
-  public static final int PLUS = 4;
-  public static final int RBRACE = 14;
+  public static final int MOD = 16;
+  public static final int PLOT = 9;
+  public static final int MAPSTO = 8;
+  public static final int PLUS = 12;
+  public static final int RBRACE = 22;
   public static final int RPAREN = 3;
-  public static final int SEMI = 16;
-  public static final int IN = 12;
-  public static final int POW = 10;
-  public static final int VARIABLE = 18;
+  public static final int SEMI = 24;
+  public static final int IN = 20;
+  public static final int CLEAR = 11;
+  public static final int POW = 18;
+  public static final int VARIABLE = 26;
+  public static final int LBRACE = 21;
   public static final int LPAREN = 2;
-  public static final int LBRACE = 13;
-  public static final int COMMA = 15;
-  public static final int FLOAT = 19;
+  public static final int COLON = 6;
+  public static final int COMMA = 23;
+  public static final int FLOAT = 27;
   public static final int EOF = 0;
-  public static final int DIV = 7;
-  public static final int MINUS = 5;
+  public static final int DIV = 15;
+  public static final int LSQUARE = 4;
+  public static final int MINUS = 13;
   public static final int error = 1;
-  public static final int LET = 11;
-  public static final int ASSIGN = 9;
-  public static final int INTEGER = 17;
-  public static final int MUL = 6;
+  public static final int LET = 19;
+  public static final int ASSIGN = 17;
+  public static final int RSQUARE = 5;
+  public static final int INTEGER = 25;
+  public static final int FOR = 10;
+  public static final int MUL = 14;
+  public static final int FUN = 7;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "LPAREN",
   "RPAREN",
+  "LSQUARE",
+  "RSQUARE",
+  "COLON",
+  "FUN",
+  "MAPSTO",
+  "PLOT",
+  "FOR",
+  "CLEAR",
   "PLUS",
   "MINUS",
   "MUL",
