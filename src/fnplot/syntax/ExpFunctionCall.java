@@ -11,24 +11,30 @@ import java.util.ArrayList;
 public class ExpFunctionCall  extends Exp {
     
     ArrayList<Exp> args;
-    String name;
+    Exp identifier;
     
 
     public ExpFunctionCall() {
         super();
     }
 
-    public ExpFunctionCall(String name, ArrayList<Exp> args) {
+    public ExpFunctionCall(Exp identifier, ArrayList<Exp> args) {
         this.args = args;
-        this.name = name;
+        this.identifier = identifier;
     }
 
-    public ArrayList<Exp> getArguments() {
+    /**
+     * @return the args
+     */
+    public ArrayList<Exp> getArgs() {
         return args;
-    }    
+    }
 
-    public String getName() {
-        return name;
+    /**
+     * @return the identifier
+     */
+    public Exp getIdentifier() {
+        return identifier;
     }
     
     @Override
@@ -47,7 +53,7 @@ public class ExpFunctionCall  extends Exp {
                 argStr.append(args.get(i));
             }
         }
-        return String.format("%s(%s)", name, argStr.toString());
+        return String.format("%s(%s)", identifier.toString(), argStr.toString());
     }
 
 }

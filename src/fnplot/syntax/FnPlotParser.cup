@@ -106,7 +106,8 @@ stmt ::= definition:d {: RESULT = d; :} |
 
 expression ::=  letExp:l {: RESULT = l; :} |
 		LBRACE stmtList:body RBRACE {: RESULT = body; :} |
-		arithExp:a {: RESULT = a; :};
+		arithExp:a {: RESULT = a; :} |
+		funDefn: fun {: RESULT = fun; :};
 
 letExp ::= LET bindings:bs IN expression:body {:
 			RESULT = new StmtLet(bs, body);
@@ -128,8 +129,7 @@ bindingsAux ::= COMMA binding:b bindingsAux:bl {:
 		:} |
 		empty {: RESULT = new ArrayList(); :};
 
-definition ::= VARIABLE:v ASSIGN expression:e SEMI {:RESULT = new StmtDefinition(v, e);:} |
-				VARIABLE: v ASSIGN funDefn: fun SEMI {: RESULT = new StmtDefinition(v, fun); :};
+definition ::= VARIABLE:v ASSIGN expression:e SEMI {:RESULT = new StmtDefinition(v, e);:};
 
 
 funDefn ::= FUN LPAREN paramListE: pl RPAREN MAPSTO expression: body {: RESULT = new ExpFunction(pl, body); :};
@@ -139,7 +139,7 @@ paramListE ::= paramList: pl {: RESULT = pl; :} | empty {: RESULT = new ArrayLis
 paramList ::= paramList: pl COMMA VARIABLE: v {: pl.add(v); RESULT = pl; :} |
 				VARIABLE: v {: ArrayList<String> lst = new ArrayList<>(); lst.add(v); RESULT = lst; :};
 
-funCall ::= VARIABLE:v LPAREN expListE: el RPAREN {: RESULT = new ExpFunctionCall(v, el); :};
+funCall ::= factor: f LPAREN expListE: el RPAREN {: RESULT = new ExpFunctionCall(f, el); :};
 
 expListE ::= expList: el {: RESULT = el; :} | empty {: RESULT = new ArrayList(); :};
 
@@ -148,9 +148,6 @@ expList ::= expList: el COMMA expression: e {: el.add(e); RESULT = el; :} |
 
 plotStmt ::= PLOT expression: ex FOR VARIABLE: v IN LSQUARE number: start COLON number: end RSQUARE {:
 				RESULT = new ExpPlot(ex, v, start, end); :};
-
-anonFunc ::= LPAREN funDefn: fn RPAREN LPAREN expList: el RPAREN {:
-				RESULT = new AnonFunc(fn, el); :};
 
 arithExp ::= 	arithExp:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |
@@ -177,7 +174,6 @@ power ::= power: p POW factor: f {: RESULT = new ExpPow(p, f); :} |
 
 factor ::= number:n {: RESULT = new ExpLit(n); :} |
 	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
-Result: 8
 	   funCall: call {: RESULT = call; :} |
 	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
 

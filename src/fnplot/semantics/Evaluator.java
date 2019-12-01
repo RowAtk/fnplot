@@ -214,9 +214,9 @@ public class Evaluator
     }
 
     public FnPlotValue<?> visitFnCall(ExpFunctionCall fnCallExp, Environment<FnPlotValue<?>> env) throws FnPlotException {
-        String name = fnCallExp.getName();
-        ArrayList<Exp> args = fnCallExp.getArguments();
-        FnPlotFunction fun = (FnPlotFunction) env.get(name);
+        Exp id = fnCallExp.getIdentifier();
+        ArrayList<Exp> args = fnCallExp.getArgs();
+        FnPlotFunction fun = (FnPlotFunction) id.visit(this, env);
         ArrayList<FnPlotValue> values = new ArrayList<>();
         for (Exp funarg : args) {
             values.add(funarg.visit(this, env));
