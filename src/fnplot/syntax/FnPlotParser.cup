@@ -149,6 +149,9 @@ expList ::= expList: el COMMA expression: e {: el.add(e); RESULT = el; :} |
 plotStmt ::= PLOT expression: ex FOR VARIABLE: v IN LSQUARE number: start COLON number: end RSQUARE {:
 				RESULT = new ExpPlot(ex, v, start, end); :};
 
+anonFunc ::= LPAREN funDefn: fn RPAREN LPAREN expList: el RPAREN {:
+				RESULT = new AnonFunc(fn, el); :};
+
 arithExp ::= 	arithExp:e PLUS term:t {:
 			RESULT = new ExpAdd(e, t); :} |
 		arithExp:e MINUS term:t {:
@@ -174,6 +177,7 @@ power ::= power: p POW factor: f {: RESULT = new ExpPow(p, f); :} |
 
 factor ::= number:n {: RESULT = new ExpLit(n); :} |
 	   VARIABLE:var {: RESULT = new ExpVar(var); :} |
+Result: 8
 	   funCall: call {: RESULT = call; :} |
 	   LPAREN expression:e RPAREN {: RESULT = e; :}	;
 

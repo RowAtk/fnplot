@@ -248,7 +248,7 @@ public class Evaluator
 
     public FnPlotValue<?> visitClear(PlotCls cls, Environment<FnPlotValue<?>> env) throws FnPlotException{
         this.plotter.clear();
-        return cls.visit(this, env);
+        return null;
     }
 
 
